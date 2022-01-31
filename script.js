@@ -1,70 +1,124 @@
-// const add = (x,y) => x + y;
-// const subtract = (x,y) => x - y;
-// const divide = (x,y) => x/y;
-// const multiply = (x,y) => x*y;
-
 const display = document.getElementById("display");
-display.innerText = 0;
+display.innerText = "";
 
-let first = ""; //first value
-let second = "";//2nd value
-let oper = "";
+let first = ""; 
+let second = "";
+let operVar = "";
 
-function enter(num){
-    if (first == "" && second == "" && oper=='subtract') {
-        first = num * -1;
-    } else if (first == "") {
-        first = num;
-    } else {
-        if(first<0){
-            first = first*10 - num;
-        } else {
-            first = (first*10) + num;
-        }
-    }
-        screen (first);
-    }
-
-
-function operate(operator) {
-    oper = operator;
-    if (second == "" && first == "") {
-        second = 0;
-    }else if (second == "" && first != "") {
-        second = first;
-        first = "";
-    }
-    screen(second);
-}
-
-function results(){
-    switch (oper) {
-        case "add":
-            first = second + first;
-            break;
-        case "subtract":
-            first = second - first;
-            break;
-        case "multiply":
-            first = second * first;
-            break;
-        case "divide":
-            first = second / first;
-            break;
-    }
-    second = "";
-    screen (first);
-}
-
-function screen(output){    
-    display.innerText = Math.round(output * 1000) / 1000;}
-
-    // output.parseFloat(x).toExponential(f);
-
-
+//CLEAR DISPLAY
 function clearAll(){
     first = "";
     second = "";
-    oper = "";
-    screen(0);
+    operVar = "";
+    display.innerText = "";
+    screen("");
+}
+
+//RUN DISPLAY- max ?? decimal places
+function screen(output){
+    if (isNaN(output)){
+            display.innerText = output;
+    } else {
+        display.innerText = Math.round(output * 1000000) / 1000000;
+}
+}
+
+//CALLED BY 'EQUAL' KEY & BY ANY OPERATOR KEY WHEN BOTH first & second VARIABLES ARE SET
+function results(){
+    switch (operVar) {
+        case "+":
+            first = parseFloat(first) + parseFloat(second);
+            break;
+        case "-":
+            first = first - second;
+            break;
+        case "*":
+            first = first * second;
+            break;
+        case "/":
+            first = first / second;
+            break;
+    }
+    second = "";
+    operVar="";
+    screen (first);
+}
+
+
+//MAIN FUNCTION CALLED BY ALL KEYS EXCEPT 'equal' & 'clearAll'
+function enter(key){
+    if(first=="" && second == "" && operVar == ""){ //STAGE1: BLANK
+        if(key == "." || key == "-"){               //capture initial -ve & decimals
+            operVar = key;
+            screen(operVar);
+                        
+        } else if (key <= 9){
+            first = key;
+            screen(first);
+        }
+    } else if(first=="" && operVar != ""){  //STAGE2: only operVal full
+        if (key <= 9){                      //concatenate first digit entered after initial minus or dot
+            first = "" + operVar + key;
+            operVar = "";
+            screen(first);
+        } else if (key == '.'){
+            if (operVar == '.'){            //trap for more than one decimal
+                operVar = '.';
+            } else operVar = '-.';          //capture negative decimals
+            screen(operVar);
+        }
+    } else if(first != "" && operVar == "") { //STAGE3: Only first full, capture operator
+        if (key == '+' || key == '-' || key == '*' || key == '/')  {
+            operVar = key;
+        }
+        else if (key == '.'){
+            if (display.innerText.includes('.')){   //trap for more than one decimal
+                first = first;
+            } else {
+                first = first + key;
+                screen(first);
+            }
+        }
+        else if (key <= 9){
+            first = "" + first + key;
+            screen(first);
+        }
+        screen(first);
+
+        if(first.length > 10){
+            alert('too many digits'); // limit # of digits entered in 'first' variable
+            clearAll();            
+        }
+
+    } else if (first != "" && operVar != "" && second == "") { // STAGE 4: Only 2nd MT
+        if (key == ('+') || key == ('-') || key == ('*') || key == ('/')) {
+            operVar = key;
+            screen(first);
+        }
+        else {
+            second = "" + key;
+            screen(second);
+        }
+    } else if (first != "" && operVar != "" && second != ""){ //STAGE 5: All Three full
+        if (key == '+' || key == '-' || key == '*' || key == '/'){
+            results();
+            operVar = key;
+        }
+        else if (key == '.'){
+            if (display.innerText.includes('.')){   //trap for more than one decimal
+                second = second;
+            } else {
+                second = "" + second + key;
+                screen(second);
+            }
+        }
+        else if (key <= 9){
+            second = "" + second + key;
+            screen(second);
+        }
+        if(second.length > 12){         // limit # of digits entered in 'first' variable
+            alert('too many digits');
+            clearAll(second);
+        }
+}
 }

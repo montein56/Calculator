@@ -25,9 +25,9 @@ body{
     height: 60px;
     font-size: 50px;
     background: lightskyblue;
-    border-radius: 2%;
+    border-radius: 5px;
     margin: 5px;
-    padding: 8px;
+    padding: 2px;
 }
 .rows{
     display: flex;
@@ -41,7 +41,7 @@ body{
     height: auto;
     background-color: lightseagreen;
     border: green solid 1px;
-    border-radius: 4%;
+    border-radius: 5px;
     margin: 3px;
     padding: 8px;
     flex: 1 1 0;
@@ -51,20 +51,16 @@ body{
     background-color: lightsalmon;
 }
 .special{
-    /* display: flex; */
     flex: 2 1 0;
     padding: 10px 20px;
 }
 
 .specialTop{
-    /* display: flex; */
     flex: 3 1 0;
     padding: 10px 32px;
 }
 .btn:hover{
-    /* border: solid #09152b 2px; */
     background-color: lightblue;
-    /* box-shadow: 3px 3px 2px 2px #0ff; */
 }
 
 @media screen and (max-width: 600px) {
@@ -75,8 +71,9 @@ body{
         
     }
     #display {
-        font-size: 25px;
+        font-size: 35px;
         height: 50px;
+        padding-top: 10px;
     }
     .container{
         width:60%;
@@ -85,7 +82,7 @@ body{
 }
 @media screen and (max-width: 400px) {
     #display {
-        font-size: 20px;
+        font-size: 30px;
         height: 40px;
     }
 }
