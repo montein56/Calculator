@@ -23,7 +23,7 @@ body{
     display: flex;
     justify-content:end;
     height: 60px;
-    font-size: 50px;
+    font-size: 40px;
     background: lightskyblue;
     border-radius: 5px;
     margin: 5px;
@@ -71,7 +71,7 @@ body{
         
     }
     #display {
-        font-size: 35px;
+        font-size: 25px;
         height: 50px;
         padding-top: 10px;
     }
@@ -82,7 +82,7 @@ body{
 }
 @media screen and (max-width: 400px) {
     #display {
-        font-size: 30px;
+        font-size: 20px;
         height: 40px;
     }
 }
