@@ -52,11 +52,15 @@ function enter(key){
             operVar = key;
             screen(operVar);
                         
-        } else if (key <= 9){
+        } else if (key <= 9 && key > 0){
             first = key;
             screen(first);
         }
     } else if(first=="" && operVar != ""){  //STAGE2: only operVal full
+        if (key == 'backspace') {
+            operVar = "";
+            screen(operVar);
+        }
         if (key <= 9){                      //concatenate first digit entered after initial minus or dot
             first = "" + operVar + key;
             operVar = "";
@@ -68,6 +72,10 @@ function enter(key){
             screen(operVar);
         }
     } else if(first != "" && operVar == "") { //STAGE3: Only first full, capture operator
+        if (key == 'backspace') {
+            first = first.toString().slice(0, -1);
+            screen(first);
+        }
         if (key == '+' || key == '-' || key == '*' || key == '/')  {
             operVar = key;
         }
@@ -91,15 +99,25 @@ function enter(key){
         }
 
     } else if (first != "" && operVar != "" && second == "") { // STAGE 4: Only 2nd MT
+        if (key == 'backspace') {
+            operVar = "";
+            screen(operVar);
+        }
         if (key == ('+') || key == ('-') || key == ('*') || key == ('/')) {
             operVar = key;
             screen(first);
         }
         else {
+            if (key != 0) {
             second = "" + key;
             screen(second);
         }
+    }
     } else if (first != "" && operVar != "" && second != ""){ //STAGE 5: All Three full
+        if (key == 'backspace') {
+            second = second.toString().slice(0, -1);
+            screen(second);
+        }
         if (key == '+' || key == '-' || key == '*' || key == '/'){
             results();
             operVar = key;
