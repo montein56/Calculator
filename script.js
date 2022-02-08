@@ -11,17 +11,16 @@ function kbkey(kb){
 
 //RUN DISPLAY- max ?? decimal places
 function screen(result){
-    if (result == '-' || result == '.' || result == '-.'){
-        display.innerText = result;   
-    } else {
+    if (result == '-' || result == '.' || result == '-.' || (result[result.length - 1] == ".")) {
+        display.innerText = first;
+    } else if (result.length > 14) {
         result = Math.round(result * 1000) / 1000;
-        if (result.toString().length >14) {
-            display.innerText = result.toExponential(3);
-        } else {
-            display.innerText = new Intl.NumberFormat().format(result);
+        result = result.toExponential(3);
+        display.innerText = result;
+    } else {
+        display.innerText = new Intl.NumberFormat().format(result);
         }
     }
-}
 
 //CALLED BY 'EQUAL' KEY, BY ENTER KEY & BY ANY OPERATOR KEY WHEN BOTH first & second VARIABLES ARE SET
 function results(){
@@ -58,7 +57,7 @@ function enter(keyBtnPressed){
     if(first == "" && second == "" && operVar == ""){           //STAGE1: BLANK
         if(keyBtnPressed == "." || keyBtnPressed == "-"){      //capture ONLY initial -ve & decimals
             operVar = keyBtnPressed;
-            screen(operVar, 1);
+            screen(operVar);
         } else if (keyBtnPressed <= 9 && keyBtnPressed > 0){
             first = keyBtnPressed;
             screen(first, 1);
@@ -96,6 +95,15 @@ function enter(keyBtnPressed){
         if (keyBtnPressed == 'Backspace') {
             operVar = "";
             screen(first, 1);
+
+
+        // } else if (keyBtnPressed == '='){
+        //     // operVar = "";
+        //     // keyBtnPressed = "";
+        //     // screen(first, 1);
+        //     alert('sfhalshdf');
+
+
         } else if (keyBtnPressed == ('+') || keyBtnPressed == ('-') || keyBtnPressed == ('*') || keyBtnPressed == ('/')) {
             operVar = keyBtnPressed;        //simply replace the operator with the new one
             screen(first, 1);
@@ -103,7 +111,7 @@ function enter(keyBtnPressed){
         } else if (keyBtnPressed == 0 && operVar == '/') {    //check divide by zero
             alert("!!!! CAN'T DIVIDE BY ZERO !!!!");
 
-        } else if (keyBtnPressed != 0) {    //this fills 'second'
+        } else if (keyBtnPressed != 0 && keyBtnPressed != '=') {    //this fills 'second' with a digit 1 to 9
             second = "" + keyBtnPressed;
             screen(second, 1);
         }
