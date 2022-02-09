@@ -12,19 +12,21 @@ function kbkey(kb){
 
 //RUN DISPLAY
 function screen(result){
-    if (result == '-' || result == '.' || result == '-.' || (result[result.length - 1] == ".")) {
-        display.innerText = first;
-    } else if (result.length > 14) {
-        result = Math.round(result * 1000) / 1000;
-        result = result.toExponential(3);
+    if (result == '-' || result == '.' || result == '-.' || (result[result.length - 1] == ".")) { //last one: to allow '9.'
+        display.innerText = result;
+    } else if (result < 0){
+        display.innerText = result;
+    
+    } else if (result.length > 12) {
+        result = parseFloat(result).toExponential(3);
         display.innerText = result;
     } else {
-        display.innerText = new Intl.NumberFormat().format(result);
+        result = result.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ',');
+        display.innerText = result;
         }
     }
 
-//CALLED BY 'EQUAL' KEY, BY ENTER KEY & BY ANY OPERATOR KEY
-// WHEN BOTH first & second VARIABLES ARE SET
+//DISPLAY KEYS PRESSED & RESULTS OF OPERATIONS
 function results(){
     switch (operVar) {
         case "+":
@@ -42,6 +44,8 @@ function results(){
     }
     second = "";
     operVar = "";
+    first = Math.round(first * 1000) / 1000;
+    first = first.toString();
     screen (first);
 }
 
@@ -54,6 +58,7 @@ function clearAll(){
     screen("");
 }
 
+//STAGE 1: ALL 3 BLANK
 function stage1 (keyBtnPressed){
     if(keyBtnPressed == "." || keyBtnPressed == "-"){ //capture ONLY initial -ve & decimals
         operVar = keyBtnPressed;
@@ -63,12 +68,12 @@ function stage1 (keyBtnPressed){
         screen(first);
     }
 }
-
+//STAGE2: only operVar full
 function stage2 (keyBtnPressed){
     if (keyBtnPressed == 'Backspace') {
         operVar = "";
         screen(operVar);
-    } else if (keyBtnPressed <= 9){    //concatenate first digit entered after initial minus or decimal
+    } else if (keyBtnPressed <= 9){    //concatenate digit entered after initial minus or decimal
         first = "" + operVar + keyBtnPressed;
         operVar = "";
         screen(first);
@@ -79,7 +84,7 @@ function stage2 (keyBtnPressed){
         screen(operVar);
     }
 }
-
+//STAGE3: Only first full, capture operator
 function stage3(keyBtnPressed){
     if (keyBtnPressed == 'Backspace') {
         first = first.toString().slice(0, -1);
@@ -96,7 +101,7 @@ function stage3(keyBtnPressed){
     }
     screen(first);
 }
-
+// STAGE 4: Only 2nd MT
 function stage4(keyBtnPressed){
     if (keyBtnPressed == 'Backspace') {
         operVar = "";
@@ -106,22 +111,33 @@ function stage4(keyBtnPressed){
         screen(first);
     } else if (keyBtnPressed == 0 && operVar == '/') {    //check divide by zero
         alert("!!!! CAN'T DIVIDE BY ZERO !!!!");
-    } else if (keyBtnPressed != 0 && keyBtnPressed != '=') {    //this fills 'second' with a digit 1 to 9
+    } else if (keyBtnPressed == '.'){
+        second = keyBtnPressed;
+        screen(second);
+    } else if (keyBtnPressed > 0 && keyBtnPressed <=9) {    //this fills 'second' with a digit 1 to 9
         second = "" + keyBtnPressed;
         screen(second);
     }
 }
-
+// STAGE 5: All Three full. 2nd = 1-9 or decimal
 function stage5(keyBtnPressed){
     if (keyBtnPressed == 'Backspace') {
         second = second.toString().slice(0, -1);
         screen(second);
     } else if (keyBtnPressed == '+' || keyBtnPressed == '-' || keyBtnPressed == '*' || keyBtnPressed == '/') {
+        if (second != '.'){
+            results();
+            operVar = keyBtnPressed;
+        }        
+    } else if (keyBtnPressed == '='){ //allow for = 
+        if (second != '.'){
         results();
-        operVar = keyBtnPressed;
-    } else if (keyBtnPressed == '='|| keyBtnPressed == 'Enter'){ //allow for number keypad = and 'Enter' keys
+        }
+    } else if (keyBtnPressed == 'Enter'){ //allow 'Enter'
+        if (second != '.'){
         results();
-    } else if (keyBtnPressed == '.'){
+        }
+    }else if (keyBtnPressed == '.'){
         if (second.includes('.')) {   //trap for more than one decimal
             second = second;
         } else {
@@ -136,15 +152,15 @@ function stage5(keyBtnPressed){
 
 //MAIN FUNCTION
 function enter(keyBtnPressed){
-    if(first == "" && second == "" && operVar == ""){   //STAGE1: BLANK
+    if(first == "" && second == "" && operVar == ""){
         stage1(keyBtnPressed);
-    } else if(first=="" && operVar != ""){              //STAGE2: only operVar full
+    } else if(first=="" && operVar != ""){              
         stage2(keyBtnPressed);
-    } else if(first != "" && operVar == "") {           //STAGE3: Only first full, capture operator
+    } else if(first != "" && operVar == "") {
         stage3(keyBtnPressed);
-    } else if (first != "" && operVar != "" && second == "") {  // STAGE 4: Only 2nd MT
+    } else if (first != "" && operVar != "" && second == "") {  
         stage4(keyBtnPressed);
-    } else if (first != "" && operVar != "" && second != ""){   // STAGE 5: All Three full
+    } else if (first != "" && operVar != "" && second != ""){
         stage5(keyBtnPressed);
     }
 }
